@@ -13,8 +13,8 @@ func NewRestClient(key, secret, subaccount string) *RestClient {
 
 	clientWithSubAccounts := rest.New(
 		auth.New(
-			"<key>",
-			"<secret>",
+			key,
+			secret,
 			auth.SubAccount{
 				UUID:     1,
 				Nickname: subaccount,
