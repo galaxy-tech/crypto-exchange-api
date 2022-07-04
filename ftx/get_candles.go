@@ -10,7 +10,7 @@ import (
 
 type CandleData struct {
 	StartTime string	`json:"startTime"`
-	Time int64	`json:"time"`
+	Time float64	`json:"time"`
 	Open float32	`json:"open"`
 	High float32	`json:"high"`
 	Low float32		`json:"low"`
@@ -23,11 +23,14 @@ type CandleDataResult struct {
 	Result []CandleData	`json:"result"`
 }
 
-func Query15MinCandles(client *chttp.HTTPClient, market string, count uint8) ([]CandleData, error) {
+func Query15MinCandles(client *chttp.HTTPClient, market string, count uint64) ([]CandleData, error) {
 
-	resolution := 15*60
-	now := time.Now().Unix()
-	url := fmt.Sprintf("https://ftx.com/api/markets/%s/candles?resolution=%d&start_time=%d", market, resolution, now)
+	var resolution uint64 = 15*60
+	endTime := uint64(time.Now().Unix())
+	startTime := endTime - (count * resolution)
+	url := fmt.Sprintf(
+		"https://ftx.com/api/markets/%s/candles?resolution=%d&start_time=%d&end_time=%d",
+		market, resolution, startTime, endTime)
 
 	if client == nil {
 		client = chttp.NewHTTPClient()

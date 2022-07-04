@@ -2,8 +2,8 @@ package ftx
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
 	chttp "github.com/galaxy-tech/crypto-exchange-api/http"
+	"github.com/pkg/errors"
 )
 
 type MarketData struct {
