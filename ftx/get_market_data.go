@@ -9,10 +9,10 @@ import (
 type MarketData struct {
 	Name string `json:"name"`
 	Enabled bool `json:"enabled"`
-	Last float32 `json:"last"`
-	Ask float32 `json:"ask"`
-	Bid float32 `json:"bid"`
-	Price float32 `json:"price"`
+	Last float64 `json:"last"`
+	Ask float64 `json:"ask"`
+	Bid float64 `json:"bid"`
+	Price float64 `json:"price"`
 	Type string `json:"type"`
 }
 
@@ -48,13 +48,13 @@ func QueryMarketData(client *chttp.HTTPClient, market string) (*MarketData, erro
 
 
 type MarketDataAskPrice struct {
-	Ask float32 `json:"ask"`
+	Ask float64 `json:"ask"`
 }
 type MarketDataAskPriceResult struct {
 	Success bool `json:"success"`
 	Result MarketDataAskPrice `json:"result"`
 }
-func QueryAskPrice(client *chttp.HTTPClient, market string) (float32, error) {
+func QueryAskPrice(client *chttp.HTTPClient, market string) (float64, error) {
 
 	url := "https://ftx.com/api/markets/" + market
 
