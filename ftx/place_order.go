@@ -25,6 +25,24 @@ func PlaceLimitBuyOrder(rc *RestClient, market, clientID string, price, size flo
 	return nil
 }
 
+func PlaceMarketBuyOrder(rc *RestClient, market, clientID string, price, size float64) error {
+	_, err := rc.client.PlaceOrder(&orders.RequestForPlaceOrder{
+		Type:   types.MARKET,
+		Market: market,
+		Side:   types.BUY,
+		Size:   size,
+		// Optionals
+		ClientID:   clientID,
+		Ioc:        false,
+		ReduceOnly: false,
+		PostOnly:   false,
+	})
+	if err != nil {
+		return errors.Wrap(err, "error placing buy limit order")
+	}
+	return nil
+}
+
 func PlaceTrailingStopSellOrder(rc *RestClient, market, clientID string, size, trailValue float64 ) error {
 	if trailValue >= 0 {
 		return errors.New("TrailValue should be negative for Sell Trailing Stop order")
