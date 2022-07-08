@@ -45,7 +45,7 @@ func PlaceLimitSellOrder(rc *RestClient, market, clientID string, price, size fl
 }
 
 
-func PlaceMarketBuyOrder(rc *RestClient, market, clientID string, price, size float64) error {
+func PlaceMarketBuyOrder(rc *RestClient, market, clientID string, size float64) error {
 	_, err := rc.client.PlaceOrder(&orders.RequestForPlaceOrder{
 		Type:   types.MARKET,
 		Market: market,
