@@ -49,6 +49,7 @@ func QueryMarketData(client *chttp.HTTPClient, market string) (*MarketData, erro
 
 type MarketDataAskPrice struct {
 	Ask float64 `json:"ask"`
+	Price float64 `json:"price"`
 }
 type MarketDataAskPriceResult struct {
 	Success bool `json:"success"`
@@ -78,6 +79,33 @@ func QueryAskPrice(client *chttp.HTTPClient, market string) (float64, error) {
 
 	return md.Result.Ask, nil
 }
+
+
+func QueryPrice(client *chttp.HTTPClient, market string) (float64, error) {
+
+	url := "https://ftx.com/api/markets/" + market
+
+	if client == nil {
+		client = chttp.NewHTTPClient()
+	}
+	dat, err := client.GetHTTP(url)
+	if err != nil {
+		return 0.0, errors.Wrap(err, "http client error")
+	}
+
+	md := &MarketDataAskPriceResult{}
+	err = json.Unmarshal(dat, &md)
+	if err != nil {
+		return 0.0, errors.Wrap(err, "json unmarshal error")
+	}
+
+	if not(md.Success) {
+		return 0.0, errors.New("FTX API returned failure")
+	}
+
+	return md.Result.Price, nil
+}
+
 
 func not(flag bool) bool {
 	return !flag
