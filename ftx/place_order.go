@@ -25,8 +25,8 @@ func PlaceLimitBuyOrder(rc *RestClient, market, clientID string, price, size flo
 	return nil
 }
 
-func PlaceLimitSellOrder(rc *RestClient, market, clientID string, price, size float64) error {
-	_, err := rc.client.PlaceOrder(&orders.RequestForPlaceOrder{
+func PlaceLimitSellOrder(rc *RestClient, market, clientID string, price, size float64) (*orders.ResponseForPlaceOrder, error) {
+	dat, err := rc.client.PlaceOrder(&orders.RequestForPlaceOrder{
 		Type:   types.LIMIT,
 		Market: market,
 		Side:   types.SELL,
@@ -39,14 +39,14 @@ func PlaceLimitSellOrder(rc *RestClient, market, clientID string, price, size fl
 		PostOnly:   false,
 	})
 	if err != nil {
-		return errors.Wrap(err, "error placing buy limit order")
+		return nil, errors.Wrap(err, "error placing buy limit order")
 	}
-	return nil
+	return dat, nil
 }
 
 
-func PlaceMarketBuyOrder(rc *RestClient, market, clientID string, size float64) error {
-	_, err := rc.client.PlaceOrder(&orders.RequestForPlaceOrder{
+func PlaceMarketBuyOrder(rc *RestClient, market, clientID string, size float64) (*orders.ResponseForPlaceOrder, error) {
+	dat, err := rc.client.PlaceOrder(&orders.RequestForPlaceOrder{
 		Type:   types.MARKET,
 		Market: market,
 		Side:   types.BUY,
@@ -58,9 +58,9 @@ func PlaceMarketBuyOrder(rc *RestClient, market, clientID string, size float64) 
 		PostOnly:   false,
 	})
 	if err != nil {
-		return errors.Wrap(err, "error placing buy limit order")
+		return nil, errors.Wrap(err, "error placing buy limit order")
 	}
-	return nil
+	return dat, nil
 }
 
 func PlaceTrailingStopSellOrder(rc *RestClient, market, clientID string, size, trailValue float64 ) error {
