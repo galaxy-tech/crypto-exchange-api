@@ -63,7 +63,7 @@ func PlaceMarketBuyOrder(rc *RestClient, market, clientID string, size float64) 
 	return dat, nil
 }
 
-func PlaceTrailingStopSellOrder(rc *RestClient, market, clientID string, size, trailValue float64 ) error {
+func PlaceTrailingStopSellOrder(rc *RestClient, market string, size, trailValue float64 ) error {
 	if trailValue >= 0 {
 		return errors.New("TrailValue should be negative for Sell Trailing Stop order")
 	}
@@ -83,7 +83,7 @@ func PlaceTrailingStopSellOrder(rc *RestClient, market, clientID string, size, t
 	return nil
 }
 
-func PlaceTrailingStopBuyOrder(rc *RestClient, market, clientID string, size, trailValue float64 ) error {
+func PlaceTrailingStopBuyOrder(rc *RestClient, market string, size, trailValue float64 ) error {
 	if trailValue >= 0 {
 		return errors.New("TrailValue should be negative for Sell Trailing Stop order")
 	}
@@ -94,6 +94,49 @@ func PlaceTrailingStopBuyOrder(rc *RestClient, market, clientID string, size, tr
 		Side:             "buy",
 		Size:             size,
 		TrailValue:       trailValue,
+		ReduceOnly:       true,
+	})
+
+	if err != nil {
+		return errors.Wrap(err, "error placing sell trailing stop order")
+	}
+	return nil
+}
+
+func PlaceStopLossOrder(rc *RestClient, market, action string, size, triggerPrice, orderPrice float64 ) error {
+	if action != "buy" && action != "sell" {
+		return errors.New("Action should be buy or sell")
+	}
+
+	_, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
+		Market:           market,
+		Type:             "stop",
+		Side:             action,
+		Size:             size,
+		TriggerPrice:     triggerPrice,
+		OrderPrice: 	  orderPrice,
+		ReduceOnly:       true,
+	})
+
+	if err != nil {
+		return errors.Wrap(err, "error placing sell trailing stop order")
+	}
+	return nil
+}
+
+func PlaceTakeProfitOrder(rc *RestClient, market, action string, size, triggerPrice, orderPrice float64 ) error {
+
+	if action != "buy" && action != "sell" {
+		return errors.New("Action should be buy or sell")
+	}
+
+	_, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
+		Market:           market,
+		Type:             "takeProfit",
+		Side:             action,
+		Size:             size,
+		TriggerPrice:     triggerPrice,
+		OrderPrice: 	  orderPrice,
 		ReduceOnly:       true,
 	})
 
