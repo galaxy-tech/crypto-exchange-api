@@ -6,8 +6,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func PlaceLimitBuyOrder(rc *RestClient, market, clientID string, price, size float64) error {
-	_, err := rc.client.PlaceOrder(&orders.RequestForPlaceOrder{
+func PlaceLimitBuyOrder(rc *RestClient, market, clientID string, price, size float64) (*orders.ResponseForPlaceOrder, error) {
+	dat, err := rc.client.PlaceOrder(&orders.RequestForPlaceOrder{
 		Type:   types.LIMIT,
 		Market: market,
 		Side:   types.BUY,
@@ -20,9 +20,9 @@ func PlaceLimitBuyOrder(rc *RestClient, market, clientID string, price, size flo
 		PostOnly:   false,
 	})
 	if err != nil {
-		return errors.Wrap(err, "error placing buy limit order")
+		return nil, errors.Wrap(err, "error placing buy limit order")
 	}
-	return nil
+	return dat, nil
 }
 
 func PlaceLimitSellOrder(rc *RestClient, market, clientID string, price, size float64) (*orders.ResponseForPlaceOrder, error) {
@@ -63,12 +63,12 @@ func PlaceMarketBuyOrder(rc *RestClient, market, clientID string, size float64) 
 	return dat, nil
 }
 
-func PlaceTrailingStopSellOrder(rc *RestClient, market string, size, trailValue float64 ) error {
+func PlaceTrailingStopSellOrder(rc *RestClient, market string, size, trailValue float64 ) (*orders.ResponseForPlaceTriggerOrder, error) {
 	if trailValue >= 0 {
-		return errors.New("TrailValue should be negative for Sell Trailing Stop order")
+		return nil, errors.New("TrailValue should be negative for Sell Trailing Stop order")
 	}
 
-	_, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
+	dat, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
 		Market:           market,
 		Type:             "trailingStop",
 		Side:             "sell",
@@ -78,17 +78,17 @@ func PlaceTrailingStopSellOrder(rc *RestClient, market string, size, trailValue 
 	})
 
 	if err != nil {
-		return errors.Wrap(err, "error placing sell trailing stop order")
+		return nil, errors.Wrap(err, "error placing sell trailing stop order")
 	}
-	return nil
+	return dat, nil
 }
 
-func PlaceTrailingStopBuyOrder(rc *RestClient, market string, size, trailValue float64 ) error {
+func PlaceTrailingStopBuyOrder(rc *RestClient, market string, size, trailValue float64 ) (*orders.ResponseForPlaceTriggerOrder, error) {
 	if trailValue >= 0 {
-		return errors.New("TrailValue should be negative for Sell Trailing Stop order")
+		return nil, errors.New("TrailValue should be negative for Sell Trailing Stop order")
 	}
 
-	_, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
+	dat, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
 		Market:           market,
 		Type:             "trailingStop",
 		Side:             "buy",
@@ -98,17 +98,17 @@ func PlaceTrailingStopBuyOrder(rc *RestClient, market string, size, trailValue f
 	})
 
 	if err != nil {
-		return errors.Wrap(err, "error placing sell trailing stop order")
+		return nil, errors.Wrap(err, "error placing sell trailing stop order")
 	}
-	return nil
+	return dat, nil
 }
 
-func PlaceStopLossOrder(rc *RestClient, market, action string, size, triggerPrice, orderPrice float64 ) error {
+func PlaceStopLossOrder(rc *RestClient, market, action string, size, triggerPrice, orderPrice float64 ) (*orders.ResponseForPlaceTriggerOrder, error) {
 	if action != "buy" && action != "sell" {
-		return errors.New("Action should be buy or sell")
+		return nil, errors.New("Action should be buy or sell")
 	}
 
-	_, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
+	dat, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
 		Market:           market,
 		Type:             "stop",
 		Side:             action,
@@ -119,18 +119,18 @@ func PlaceStopLossOrder(rc *RestClient, market, action string, size, triggerPric
 	})
 
 	if err != nil {
-		return errors.Wrap(err, "error placing sell trailing stop order")
+		return nil, errors.Wrap(err, "error placing sell trailing stop order")
 	}
-	return nil
+	return dat, nil
 }
 
-func PlaceTakeProfitOrder(rc *RestClient, market, action string, size, triggerPrice, orderPrice float64 ) error {
+func PlaceTakeProfitOrder(rc *RestClient, market, action string, size, triggerPrice, orderPrice float64 ) (*orders.ResponseForPlaceTriggerOrder, error) {
 
 	if action != "buy" && action != "sell" {
-		return errors.New("Action should be buy or sell")
+		return nil, errors.New("Action should be buy or sell")
 	}
 
-	_, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
+	dat, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
 		Market:           market,
 		Type:             "takeProfit",
 		Side:             action,
@@ -141,7 +141,7 @@ func PlaceTakeProfitOrder(rc *RestClient, market, action string, size, triggerPr
 	})
 
 	if err != nil {
-		return errors.Wrap(err, "error placing sell trailing stop order")
+		return nil, errors.Wrap(err, "error placing sell trailing stop order")
 	}
-	return nil
+	return dat, nil
 }
