@@ -33,3 +33,26 @@ func CancelTriggerOrder(rc *RestClient, id string) error {
 
 	return nil
 }
+
+func CancelOrder(rc *RestClient, id int) error {
+
+	req := &orders.RequestForCancelByID{
+		OrderID: id,
+	}
+	dat, err := rc.client.CancelByID(req)
+	if err != nil {
+		return errors.Wrap(err, "error in cancel  order")
+	}
+
+	resp := CancelResponse{}
+	err = json.Unmarshal([]byte(*dat), &resp)
+	if err != nil {
+		return errors.New("error unmarshalling json response: " + string(*dat))
+	}
+
+	if resp.Success != true {
+		return errors.New("error cancelling failed")
+	}
+
+	return nil
+}
