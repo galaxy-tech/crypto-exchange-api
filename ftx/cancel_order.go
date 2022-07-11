@@ -24,7 +24,7 @@ func CancelTriggerOrder(rc *RestClient, id string) error {
 	resp := CancelResponse{}
 	err = json.Unmarshal([]byte(*dat), &resp)
 	if err != nil {
-		return errors.New("error unmarshalling json response")
+		return errors.New("error unmarshalling json response: " + string(*dat))
 	}
 
 	if resp.Success != true {
