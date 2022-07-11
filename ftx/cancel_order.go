@@ -1,7 +1,6 @@
 package ftx
 
 import (
-	"encoding/json"
 	"github.com/galaxy-tech/go-ftx/rest/private/orders"
 	"github.com/pkg/errors"
 )
@@ -21,13 +20,8 @@ func CancelTriggerOrder(rc *RestClient, id string) error {
 		return errors.Wrap(err, "error in cancel trigger order")
 	}
 
-	resp := CancelResponse{}
-	err = json.Unmarshal([]byte(*dat), &resp)
-	if err != nil {
-		return errors.New("error unmarshalling json response: " + string(*dat))
-	}
 
-	if resp.Success != true {
+	if *dat != "Order cancelled" {
 		return errors.New("error cancelling trigger failed")
 	}
 
@@ -44,14 +38,8 @@ func CancelOrder(rc *RestClient, id int) error {
 		return errors.Wrap(err, "error in cancel  order")
 	}
 
-	resp := CancelResponse{}
-	err = json.Unmarshal([]byte(*dat), &resp)
-	if err != nil {
-		return errors.New("error unmarshalling json response: " + string(*dat))
-	}
-
-	if resp.Success != true {
-		return errors.New("error cancelling failed")
+	if *dat != "Order cancelled" {
+		return errors.New("error cancelling trigger failed")
 	}
 
 	return nil
