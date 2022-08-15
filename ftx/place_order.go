@@ -124,6 +124,27 @@ func PlaceStopLossOrder(rc *RestClient, market, action string, size, triggerPric
 	return dat, nil
 }
 
+func PlaceEntryStopLossOrder(rc *RestClient, market, action string, size, triggerPrice, orderPrice float64 ) (*orders.ResponseForPlaceTriggerOrder, error) {
+	if action != "buy" && action != "sell" {
+		return nil, errors.New("Action should be buy or sell")
+	}
+
+	dat, err := rc.client.PlaceTriggerOrder(&orders.RequestForPlaceTriggerOrder{
+		Market:           market,
+		Type:             "stop",
+		Side:             action,
+		Size:             size,
+		TriggerPrice:     triggerPrice,
+		OrderPrice: 	  orderPrice,
+		ReduceOnly:       false,
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "error placing sell trailing stop order")
+	}
+	return dat, nil
+}
+
 func PlaceTakeProfitOrder(rc *RestClient, market, action string, size, triggerPrice, orderPrice float64 ) (*orders.ResponseForPlaceTriggerOrder, error) {
 
 	if action != "buy" && action != "sell" {
